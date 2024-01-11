@@ -180,4 +180,9 @@ class ITrie<V> extends Iterable<(String, V)> {
     nStack[0].count = count;
     return ITrie._(nStack[0]);
   }
+
+  @override
+  String toString() {
+    return toList().toString();
+  }
 }

@@ -17,5 +17,12 @@ void main() {
         expect(itrie.elementAtOrNull(1), ("me", 1));
       });
     });
+
+    group('inspect', () {
+      test('toString', () {
+        final itrie = ITrie<int>.empty().insert("call", 0).insert("me", 1);
+        expect(itrie.toString(), "[(call, 0), (me, 1)]");
+      });
+    });
   });
 }
