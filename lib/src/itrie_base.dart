@@ -180,6 +180,47 @@ class ITrie<V> extends Iterable<(String, V)> {
     return ITrie._(nStack[0]);
   }
 
+  V? get(String key) {
+    if (_root == null || key.isEmpty) return null;
+
+    _Node<V> n = _root;
+    int cIndex = 0;
+
+    while (cIndex < key.length) {
+      final c = key[cIndex];
+      final compare = c.compareTo(n.key);
+      if (compare > 0) {
+        final right = n.right;
+        if (right == null) {
+          return null;
+        } else {
+          n = right;
+        }
+      } else if (compare < 0) {
+        final left = n.left;
+        if (left == null) {
+          return null;
+        } else {
+          n = left;
+        }
+      } else {
+        if (cIndex == key.length - 1) {
+          return n.value;
+        } else {
+          final mid = n.mid;
+          if (mid == null) {
+            return null;
+          } else {
+            n = mid;
+            cIndex += 1;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
   (String, V)? longestPrefixOf(String key) {
     if (_root == null || key.isEmpty) return null;
 

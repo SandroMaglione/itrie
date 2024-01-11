@@ -105,6 +105,18 @@ void main() {
         expect(itrie.longestPrefixOf("shell"), ("she", 2));
         expect(itrie.longestPrefixOf("shellsort"), ("shells", 0));
       });
+
+      test('get', () {
+        final itrie = ITrie<int>.empty()
+            .insert("shells", 0)
+            .insert("sells", 1)
+            .insert("she", 2);
+
+        expect(itrie.get("sell"), null);
+        expect(itrie.get("sells"), 1);
+        expect(itrie.get("shell"), null);
+        expect(itrie.get("she"), 2);
+      });
     });
 
     group('inspect', () {
