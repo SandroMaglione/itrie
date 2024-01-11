@@ -1,11 +1,13 @@
 class _Node<V> {
   final String key;
-  final int count;
-  final V? value;
+  int count;
+  V? value;
+
   final _Node<V>? left;
   final _Node<V>? mid;
   final _Node<V>? right;
-  const _Node({
+
+  _Node({
     required this.key,
     required this.count,
     this.value,
@@ -75,8 +77,12 @@ class ITrieIterator<V, T> implements Iterator<T> {
 }
 
 class ITrie<V> extends Iterable<(String, V)> {
-  _Node<V>? _root;
+  final _Node<V>? _root;
   int? count;
+
+  ITrie._(this._root);
+
+  factory ITrie.empty() => ITrie._(null);
 
   @override
   Iterator<(String, V)> get iterator => ITrieIterator(
@@ -84,4 +90,94 @@ class ITrie<V> extends Iterable<(String, V)> {
         (key, value) => (key, value),
         (_, __) => true,
       );
+
+  ITrie<V> insert(String key, V value) {
+    if (key.isEmpty) return this;
+
+    // -1:left | 0:mid | 1:right
+    final List<int> dStack = [];
+    final List<_Node<V>> nStack = [];
+
+    _Node<V> n = _root ?? _Node(key: key[0], count: 0);
+    final count = n.count + 1;
+    int cIndex = 0;
+
+    while (cIndex < key.length) {
+      final c = key[cIndex];
+      nStack.add(n);
+
+      final compare = c.compareTo(n.key);
+      if (compare > 0) {
+        dStack.add(1);
+
+        final right = n.right;
+        if (right == null) {
+          n = _Node(key: c, count: count);
+        } else {
+          n = right;
+        }
+      } else if (compare < 0) {
+        dStack.add(-1);
+
+        final left = n.left;
+        if (left == null) {
+          n = _Node(key: c, count: count);
+        } else {
+          n = left;
+        }
+      } else {
+        final mid = n.mid;
+        if (cIndex == key.length - 1) {
+          n.value = value;
+        } else if (mid == null) {
+          dStack.add(0);
+          n = _Node(key: key[cIndex + 1], count: count);
+        } else {
+          dStack.add(0);
+          n = mid;
+        }
+
+        cIndex += 1;
+      }
+    }
+
+    // Rebuild path to leaf node (Path-copying immutability)
+    for (int s = nStack.length - 2; s >= 0; --s) {
+      final n2 = nStack[s];
+      final d = dStack[s];
+      if (d < 0) {
+        // left
+        nStack[s] = _Node(
+          key: n2.key,
+          count: count,
+          value: n2.value,
+          left: nStack[s + 1],
+          mid: n2.mid,
+          right: n2.right,
+        );
+      } else if (d > 0) {
+        // right
+        nStack[s] = _Node(
+          key: n2.key,
+          count: count,
+          value: n2.value,
+          left: n2.left,
+          mid: n2.mid,
+          right: nStack[s + 1],
+        );
+      } else {
+        // mid
+        nStack[s] = _Node(
+            key: n2.key,
+            count: count,
+            value: n2.value,
+            left: n2.left,
+            mid: nStack[s + 1],
+            right: n2.right);
+      }
+    }
+
+    nStack[0].count = count;
+    return ITrie._(nStack[0]);
+  }
 }
