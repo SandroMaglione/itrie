@@ -485,6 +485,7 @@ class ITrie<V> extends Iterable<(String, V)> {
 
   Iterable<String> get keys => map((entry) => entry.$1);
   Iterable<V> get values => map((entry) => entry.$2);
+  bool has(String key) => get(key) != null;
 
   @override
   String toString() {

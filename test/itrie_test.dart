@@ -133,6 +133,18 @@ void main() {
         expect(itrie.get("shell"), null);
         expect(itrie.get("she"), 2);
       });
+
+      test('has', () {
+        final itrie = ITrie<int>.empty()
+            .insert("shells", 0)
+            .insert("sells", 1)
+            .insert("she", 2);
+
+        expect(itrie.has("sell"), false);
+        expect(itrie.has("sells"), true);
+        expect(itrie.has("shell"), false);
+        expect(itrie.has("she"), true);
+      });
     });
 
     group('inspect', () {
