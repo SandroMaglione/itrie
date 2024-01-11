@@ -38,6 +38,22 @@ void main() {
         expect(itrieEmpty.length, 0);
         expect(itrieInsert.length, 1);
       });
+
+      test('keys', () {
+        final itrie = ITrie<int>.empty()
+            .insert("call", 0)
+            .insert("me", 1)
+            .insert("and", 2);
+        expect(itrie.keys.toList(), ["and", "call", "me"]);
+      });
+
+      test('values', () {
+        final itrie = ITrie<int>.empty()
+            .insert("call", 0)
+            .insert("me", 1)
+            .insert("and", 2);
+        expect(itrie.values.toList(), [2, 0, 1]);
+      });
     });
 
     group('inspect', () {

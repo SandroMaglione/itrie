@@ -188,6 +188,9 @@ class ITrie<V> extends Iterable<(String, V)> {
     return ITrie._(nStack[0]);
   }
 
+  Iterable<String> get keys => map((entry) => entry.$1);
+  Iterable<V> get values => map((entry) => entry.$2);
+
   @override
   String toString() {
     return toList().toString();
