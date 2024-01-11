@@ -31,6 +31,15 @@ void main() {
       });
     });
 
+    group('getters', () {
+      test('length', () {
+        final itrieEmpty = ITrie<int>.empty();
+        final itrieInsert = itrieEmpty.insert("call", 0);
+        expect(itrieEmpty.length, 0);
+        expect(itrieInsert.length, 1);
+      });
+    });
+
     group('inspect', () {
       test('toString', () {
         final itrie = ITrie<int>.empty().insert("call", 0).insert("me", 1);
