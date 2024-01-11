@@ -17,15 +17,13 @@ class _Node<V> {
   });
 }
 
-class ITrieIterator<V, T> implements Iterator<T> {
+class _ITrieIterator<V> implements Iterator<(String, V)> {
   List<(_Node<V>, String, bool)> stack = [];
-  late T _current;
+  late (String, V) _current;
 
   final ITrie<V> _trie;
-  final T Function(String key, V value) mapF;
-  final bool Function(String key, V value) filterF;
 
-  ITrieIterator(this._trie, this.mapF, this.filterF) {
+  _ITrieIterator(this._trie) {
     final root = _trie._root;
     if (root != null) {
       stack.add((root, "", false));
@@ -33,7 +31,7 @@ class ITrieIterator<V, T> implements Iterator<T> {
   }
 
   @override
-  T get current => _current;
+  (String, V) get current => _current;
 
   @override
   bool moveNext() {
@@ -44,10 +42,8 @@ class ITrieIterator<V, T> implements Iterator<T> {
         final value = node.value;
         if (value != null) {
           final key = keyString + node.key;
-          if (filterF(key, value)) {
-            _current = mapF(key, value);
-            return true;
-          }
+          _current = (key, value);
+          return true;
         }
       } else {
         _addToStack(node, keyString);
@@ -92,11 +88,7 @@ class ITrie<V> extends Iterable<(String, V)> {
   }
 
   @override
-  Iterator<(String, V)> get iterator => ITrieIterator(
-        this,
-        (key, value) => (key, value),
-        (_, __) => true,
-      );
+  Iterator<(String, V)> get iterator => _ITrieIterator(this);
 
   ITrie<V> insert(String key, V value) {
     if (key.isEmpty) return this;
@@ -188,6 +180,8 @@ class ITrie<V> extends Iterable<(String, V)> {
     return ITrie._(nStack[0]);
   }
 
+  Iterable<(String, V)> withPrefix(String prefix) =>
+      where((entry) => entry.$1.startsWith(prefix));
   Iterable<String> get keys => map((entry) => entry.$1);
   Iterable<V> get values => map((entry) => entry.$2);
 
