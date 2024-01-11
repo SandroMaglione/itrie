@@ -221,6 +221,110 @@ class ITrie<V> extends Iterable<(String, V)> {
     return null;
   }
 
+  ITrie<V> remove(String key) {
+    if (_root == null || key.isEmpty) return this;
+
+    _Node<V> n = _root;
+    final count = n.count - 1;
+    // -1:left | 0:mid | 1:right
+    final List<int> dStack = [];
+    final List<_Node<V>> nStack = [];
+
+    int cIndex = 0;
+    while (cIndex < key.length) {
+      final c = key[cIndex];
+      final compare = c.compareTo(n.key);
+      if (compare > 0) {
+        final right = n.right;
+        if (right == null) {
+          return this;
+        } else {
+          nStack.add(n);
+          dStack.add(1);
+          n = right;
+        }
+      } else if (compare < 0) {
+        final left = n.left;
+        if (left == null) {
+          return this;
+        } else {
+          nStack.add(n);
+          dStack.add(-1);
+          n = left;
+        }
+      } else {
+        if (cIndex == key.length - 1) {
+          if (n.value != null) {
+            nStack.add(n);
+            dStack.add(0);
+            cIndex += 1;
+          } else {
+            return this;
+          }
+        } else {
+          final mid = n.mid;
+          if (mid == null) {
+            return this;
+          } else {
+            nStack.add(n);
+            dStack.add(0);
+            n = mid;
+            cIndex += 1;
+          }
+        }
+      }
+    }
+
+    final removeNode = nStack[nStack.length - 1];
+    nStack[nStack.length - 1] = _Node(
+        key: removeNode.key,
+        count: count,
+        left: removeNode.left,
+        mid: removeNode.mid,
+        right: removeNode.right);
+
+    // Rebuild path to leaf node (Path-copying immutability)
+    for (int s = nStack.length - 2; s >= 0; --s) {
+      final n2 = nStack[s];
+      final d = dStack[s];
+      final child = nStack[s + 1];
+      final nc = child.left == null && child.mid == null && child.right == null
+          ? null
+          : child;
+      if (d < 0) {
+        // left
+        nStack[s] = _Node(
+            key: n2.key,
+            count: count,
+            value: n2.value,
+            left: nc,
+            mid: n2.mid,
+            right: n2.right);
+      } else if (d > 0) {
+        // right
+        nStack[s] = _Node(
+            key: n2.key,
+            count: count,
+            value: n2.value,
+            left: n2.left,
+            mid: n2.mid,
+            right: nc);
+      } else {
+        // mid
+        nStack[s] = _Node(
+            key: n2.key,
+            count: count,
+            value: n2.value,
+            left: n2.left,
+            mid: nc,
+            right: n2.right);
+      }
+    }
+
+    nStack[0].count = count;
+    return ITrie._(nStack[0]);
+  }
+
   (String, V)? longestPrefixOf(String key) {
     if (_root == null || key.isEmpty) return null;
 
