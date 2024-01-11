@@ -522,7 +522,7 @@ class ITrie<V> extends Iterable<(String, V)> {
 
   @override
   String toString() {
-    return toList().toString();
+    return "ITrie(${toList().toString()})";
   }
 
   @override
