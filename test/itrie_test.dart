@@ -8,6 +8,19 @@ void main() {
         final itrie = ITrie<int>.empty();
         expect(itrie.firstOrNull, null);
       });
+
+      test('fromIterable', () {
+        final itrie = ITrie<int>.fromIterable([
+          ("call", 0),
+          ("me", 1),
+          ("and", 2),
+        ]);
+        expect(itrie.toList(), [
+          ("and", 2),
+          ("call", 0),
+          ("me", 1),
+        ]);
+      });
     });
 
     group('mutations', () {

@@ -83,6 +83,13 @@ class ITrie<V> extends Iterable<(String, V)> {
   ITrie._(this._root);
 
   factory ITrie.empty() => ITrie._(null);
+  factory ITrie.fromIterable(Iterable<(String, V)> entries) {
+    ITrie<V> itrie = ITrie.empty();
+    for (final (key, value) in entries) {
+      itrie = itrie.insert(key, value);
+    }
+    return itrie;
+  }
 
   @override
   Iterator<(String, V)> get iterator => ITrieIterator(
