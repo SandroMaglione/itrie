@@ -35,6 +35,16 @@ void main() {
         expect(itrie.remove("call").toList(), [("me", 1)]);
         expect(itrie.remove("me").toList(), [("call", 0)]);
       });
+
+      test('modify', () {
+        final itrie = ITrie<int>.empty().insert("call", 0).insert("me", 1);
+        expect(itrie.modify("call", (v) => v + 10).toList(),
+            [("call", 10), ("me", 1)]);
+        expect(itrie.modify("me", (v) => v + 11).toList(),
+            [("call", 0), ("me", 12)]);
+        expect(itrie.modify("mea", (v) => v + 12).toList(),
+            [("call", 0), ("me", 1)]);
+      });
     });
 
     group('getters', () {
