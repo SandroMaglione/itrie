@@ -17,19 +17,71 @@ class _Node<V> {
 
 class ITrieIterator<V, T> implements Iterator<T> {
   List<(_Node<V>, String, bool)> stack = [];
+  late T _current;
+
+  final ITrie<V> _trie;
+  final T Function(String key, V value) mapF;
+  final bool Function(String key, V value) filterF;
+
+  ITrieIterator(this._trie, this.mapF, this.filterF) {
+    final root = _trie._root;
+    if (root != null) {
+      stack.add((root, "", false));
+    }
+  }
 
   @override
-  // TODO: implement current
-  T get current => throw UnimplementedError();
+  T get current => _current;
 
   @override
   bool moveNext() {
-    // TODO: implement moveNext
-    throw UnimplementedError();
+    while (stack.isNotEmpty) {
+      final (node, keyString, isAdded) = stack.removeLast();
+
+      if (isAdded) {
+        final value = node.value;
+        if (value != null) {
+          final key = keyString + node.key;
+          if (filterF(key, value)) {
+            _current = mapF(key, value);
+            return true;
+          }
+        }
+      } else {
+        _addToStack(node, keyString);
+      }
+    }
+
+    return false;
+  }
+
+  void _addToStack(_Node<V> node, String keyString) {
+    final right = node.right;
+    if (right != null) {
+      stack.add((right, keyString, false));
+    }
+
+    final mid = node.mid;
+    if (mid != null) {
+      stack.add((mid, keyString + node.key, false));
+    }
+    stack.add((node, keyString, true));
+
+    final left = node.left;
+    if (left != null) {
+      stack.add((left, keyString, false));
+    }
   }
 }
 
-class ITrie<V> extends Iterable<V> {
+class ITrie<V> extends Iterable<(String, V)> {
+  _Node<V>? _root;
+  int? count;
+
   @override
-  Iterator<V> get iterator => ITrieIterator();
+  Iterator<(String, V)> get iterator => ITrieIterator(
+        this,
+        (key, value) => (key, value),
+        (_, __) => true,
+      );
 }
