@@ -166,5 +166,17 @@ void main() {
         expect(itrie.toString(), "[(call, 0), (me, 1)]");
       });
     });
+
+    group('equality', () {
+      test('==', () {
+        final itrie = ITrie<int>.empty().insert("call", 0).insert("me", 1);
+        expect(itrie, itrie);
+        expect(itrie.remove("none"), itrie);
+
+        final itrieNew = itrie.insert("can", 2);
+        expect(itrie, itrie);
+        expect(itrie.insertMany([("can", 2)]), itrieNew);
+      });
+    });
   });
 }

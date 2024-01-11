@@ -15,6 +15,23 @@ class _Node<V> {
     this.mid,
     this.right,
   });
+
+  @override
+  bool operator ==(Object other) =>
+      (other is _Node<V>) &&
+      other.key == key &&
+      other.value == value &&
+      other.left == left &&
+      other.mid == mid &&
+      other.right == right;
+
+  @override
+  int get hashCode =>
+      key.hashCode ^
+      value.hashCode ^
+      left.hashCode ^
+      mid.hashCode ^
+      right.hashCode;
 }
 
 class _ITrieIterator<V> implements Iterator<(String, V)> {
@@ -507,4 +524,10 @@ class ITrie<V> extends Iterable<(String, V)> {
   String toString() {
     return toList().toString();
   }
+
+  @override
+  bool operator ==(Object other) => (other is ITrie<V>) && other._root == _root;
+
+  @override
+  int get hashCode => _root.hashCode;
 }
