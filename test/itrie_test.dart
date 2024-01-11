@@ -42,6 +42,13 @@ void main() {
         expect(itrie.remove("me").toList(), [("call", 0)]);
       });
 
+      test('removeMany', () {
+        final itrie = ITrie<int>.empty().insert("call", 0).insert("me", 1);
+        expect(itrie.removeMany(["call"]).toList(), [("me", 1)]);
+        expect(itrie.removeMany(["me"]).toList(), [("call", 0)]);
+        expect(itrie.removeMany(["me", "call"]).isEmpty, true);
+      });
+
       test('modify', () {
         final itrie = ITrie<int>.empty().insert("call", 0).insert("me", 1);
         expect(itrie.modify("call", (v) => v + 10).toList(),

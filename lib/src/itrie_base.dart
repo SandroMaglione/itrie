@@ -438,6 +438,14 @@ class ITrie<V> extends Iterable<(String, V)> {
     return itrie;
   }
 
+  ITrie<V> removeMany(Iterable<String> iter) {
+    var itrie = this;
+    for (final key in iter) {
+      itrie = itrie.remove(key);
+    }
+    return itrie;
+  }
+
   (String, V)? longestPrefixOf(String key) {
     if (_root == null || key.isEmpty) return null;
 
