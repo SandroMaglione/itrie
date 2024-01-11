@@ -30,6 +30,12 @@ void main() {
         expect(itrie.elementAtOrNull(1), ("me", 1));
       });
 
+      test('insertMany', () {
+        final itrie = ITrie<int>.empty().insertMany([("call", 0), ("me", 1)]);
+        expect(itrie.elementAtOrNull(0), ("call", 0));
+        expect(itrie.elementAtOrNull(1), ("me", 1));
+      });
+
       test('remove', () {
         final itrie = ITrie<int>.empty().insert("call", 0).insert("me", 1);
         expect(itrie.remove("call").toList(), [("me", 1)]);

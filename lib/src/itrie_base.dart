@@ -430,6 +430,14 @@ class ITrie<V> extends Iterable<(String, V)> {
     return ITrie._(nStack[0]);
   }
 
+  ITrie<V> insertMany(Iterable<(String, V)> iter) {
+    var itrie = this;
+    for (final (key, value) in iter) {
+      itrie = itrie.insert(key, value);
+    }
+    return itrie;
+  }
+
   (String, V)? longestPrefixOf(String key) {
     if (_root == null || key.isEmpty) return null;
 
