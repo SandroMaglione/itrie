@@ -182,6 +182,13 @@ class ITrie<V> extends Iterable<(String, V)> {
 
   Iterable<(String, V)> withPrefix(String prefix) =>
       where((entry) => entry.$1.startsWith(prefix));
+
+  Iterable<String> keysWithPrefix(String prefix) =>
+      withPrefix(prefix).map((e) => e.$1);
+
+  Iterable<V> valuesWithPrefix(String prefix) =>
+      withPrefix(prefix).map((e) => e.$2);
+
   Iterable<String> get keys => map((entry) => entry.$1);
   Iterable<V> get values => map((entry) => entry.$2);
 
