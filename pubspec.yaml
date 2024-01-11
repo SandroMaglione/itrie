@@ -1,0 +1,12 @@
+name: itrie
+description: Data structure for immutable Trie in dart
+version: 0.0.1
+
+environment:
+  sdk: ^3.2.3
+
+dependencies:
+
+dev_dependencies:
+  lints: ^2.1.0
+  test: ^1.24.0
