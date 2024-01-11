@@ -93,6 +93,18 @@ void main() {
             .insert("shore", 7);
         expect(itrie.valuesWithPrefix("she").toList(), [0, 1]);
       });
+
+      test('longestPrefixOf', () {
+        final itrie = ITrie<int>.empty()
+            .insert("shells", 0)
+            .insert("sells", 1)
+            .insert("she", 2);
+
+        expect(itrie.longestPrefixOf("sell"), null);
+        expect(itrie.longestPrefixOf("sells"), ("sells", 1));
+        expect(itrie.longestPrefixOf("shell"), ("she", 2));
+        expect(itrie.longestPrefixOf("shellsort"), ("shells", 0));
+      });
     });
 
     group('inspect', () {

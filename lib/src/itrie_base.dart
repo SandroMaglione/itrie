@@ -180,6 +180,50 @@ class ITrie<V> extends Iterable<(String, V)> {
     return ITrie._(nStack[0]);
   }
 
+  (String, V)? longestPrefixOf(String key) {
+    if (_root == null || key.isEmpty) return null;
+
+    _Node<V> n = _root;
+    (String, V)? longestPrefixNode;
+    int cIndex = 0;
+
+    while (cIndex < key.length) {
+      final c = key[cIndex];
+
+      final value = n.value;
+      if (value != null) {
+        longestPrefixNode = (key.substring(0, cIndex + 1), value);
+      }
+
+      final compare = c.compareTo(n.key);
+      if (compare > 0) {
+        final right = n.right;
+        if (right == null) {
+          break;
+        } else {
+          n = right;
+        }
+      } else if (compare < 0) {
+        final left = n.left;
+        if (left == null) {
+          break;
+        } else {
+          n = left;
+        }
+      } else {
+        final mid = n.mid;
+        if (mid == null) {
+          break;
+        } else {
+          n = mid;
+          cIndex += 1;
+        }
+      }
+    }
+
+    return longestPrefixNode;
+  }
+
   Iterable<(String, V)> withPrefix(String prefix) =>
       where((entry) => entry.$1.startsWith(prefix));
 
