@@ -64,8 +64,10 @@ void main() {
       test('length', () {
         final itrieEmpty = ITrie<int>.empty();
         final itrieInsert = itrieEmpty.insert("call", 0);
+        final itrieRemove = itrieInsert.remove("call");
         expect(itrieEmpty.length, 0);
         expect(itrieInsert.length, 1);
+        expect(itrieRemove.length, 0);
       });
 
       test('keys', () {

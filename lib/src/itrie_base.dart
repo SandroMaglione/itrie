@@ -1,6 +1,5 @@
 class _Node<V> {
   final String key;
-  int count;
   V? value;
 
   final _Node<V>? left;
@@ -9,7 +8,6 @@ class _Node<V> {
 
   _Node({
     required this.key,
-    required this.count,
     this.value,
     this.left,
     this.mid,
@@ -91,11 +89,11 @@ class _ITrieIterator<V> implements Iterator<(String, V)> {
 
 class ITrie<V> extends Iterable<(String, V)> {
   final _Node<V>? _root;
-  int? count;
+  final int _count;
 
-  ITrie._(this._root);
+  const ITrie._(this._root, this._count);
 
-  factory ITrie.empty() => ITrie._(null);
+  factory ITrie.empty() => ITrie._(null, 0);
   factory ITrie.fromIterable(Iterable<(String, V)> entries) {
     ITrie<V> itrie = ITrie.empty();
     for (final (key, value) in entries) {
@@ -114,8 +112,7 @@ class ITrie<V> extends Iterable<(String, V)> {
     final List<int> dStack = [];
     final List<_Node<V>> nStack = [];
 
-    _Node<V> n = _root ?? _Node(key: key[0], count: 0);
-    final count = n.count + 1;
+    _Node<V> n = _root ?? _Node(key: key[0]);
     int cIndex = 0;
 
     while (cIndex < key.length) {
@@ -128,7 +125,7 @@ class ITrie<V> extends Iterable<(String, V)> {
 
         final right = n.right;
         if (right == null) {
-          n = _Node(key: c, count: count);
+          n = _Node(key: c);
         } else {
           n = right;
         }
@@ -137,7 +134,7 @@ class ITrie<V> extends Iterable<(String, V)> {
 
         final left = n.left;
         if (left == null) {
-          n = _Node(key: c, count: count);
+          n = _Node(key: c);
         } else {
           n = left;
         }
@@ -147,7 +144,7 @@ class ITrie<V> extends Iterable<(String, V)> {
           n.value = value;
         } else if (mid == null) {
           dStack.add(0);
-          n = _Node(key: key[cIndex + 1], count: count);
+          n = _Node(key: key[cIndex + 1]);
         } else {
           dStack.add(0);
           n = mid;
@@ -165,7 +162,6 @@ class ITrie<V> extends Iterable<(String, V)> {
         // left
         nStack[s] = _Node(
           key: n2.key,
-          count: count,
           value: n2.value,
           left: nStack[s + 1],
           mid: n2.mid,
@@ -175,7 +171,6 @@ class ITrie<V> extends Iterable<(String, V)> {
         // right
         nStack[s] = _Node(
           key: n2.key,
-          count: count,
           value: n2.value,
           left: n2.left,
           mid: n2.mid,
@@ -184,17 +179,16 @@ class ITrie<V> extends Iterable<(String, V)> {
       } else {
         // mid
         nStack[s] = _Node(
-            key: n2.key,
-            count: count,
-            value: n2.value,
-            left: n2.left,
-            mid: nStack[s + 1],
-            right: n2.right);
+          key: n2.key,
+          value: n2.value,
+          left: n2.left,
+          mid: nStack[s + 1],
+          right: n2.right,
+        );
       }
     }
 
-    nStack[0].count = count;
-    return ITrie._(nStack[0]);
+    return ITrie._(nStack[0], _count + 1);
   }
 
   V? get(String key) {
@@ -242,7 +236,6 @@ class ITrie<V> extends Iterable<(String, V)> {
     if (_root == null || key.isEmpty) return this;
 
     _Node<V> n = _root;
-    final count = n.count - 1;
     // -1:left | 0:mid | 1:right
     final List<int> dStack = [];
     final List<_Node<V>> nStack = [];
@@ -294,11 +287,11 @@ class ITrie<V> extends Iterable<(String, V)> {
 
     final removeNode = nStack[nStack.length - 1];
     nStack[nStack.length - 1] = _Node(
-        key: removeNode.key,
-        count: count,
-        left: removeNode.left,
-        mid: removeNode.mid,
-        right: removeNode.right);
+      key: removeNode.key,
+      left: removeNode.left,
+      mid: removeNode.mid,
+      right: removeNode.right,
+    );
 
     // Rebuild path to leaf node (Path-copying immutability)
     for (int s = nStack.length - 2; s >= 0; --s) {
@@ -311,35 +304,34 @@ class ITrie<V> extends Iterable<(String, V)> {
       if (d < 0) {
         // left
         nStack[s] = _Node(
-            key: n2.key,
-            count: count,
-            value: n2.value,
-            left: nc,
-            mid: n2.mid,
-            right: n2.right);
+          key: n2.key,
+          value: n2.value,
+          left: nc,
+          mid: n2.mid,
+          right: n2.right,
+        );
       } else if (d > 0) {
         // right
         nStack[s] = _Node(
-            key: n2.key,
-            count: count,
-            value: n2.value,
-            left: n2.left,
-            mid: n2.mid,
-            right: nc);
+          key: n2.key,
+          value: n2.value,
+          left: n2.left,
+          mid: n2.mid,
+          right: nc,
+        );
       } else {
         // mid
         nStack[s] = _Node(
-            key: n2.key,
-            count: count,
-            value: n2.value,
-            left: n2.left,
-            mid: nc,
-            right: n2.right);
+          key: n2.key,
+          value: n2.value,
+          left: n2.left,
+          mid: nc,
+          right: n2.right,
+        );
       }
     }
 
-    nStack[0].count = count;
-    return ITrie._(nStack[0]);
+    return ITrie._(nStack[0], _count - 1);
   }
 
   ITrie<V> modify(String key, V Function(V value) f) {
@@ -402,12 +394,12 @@ class ITrie<V> extends Iterable<(String, V)> {
     }
 
     nStack[nStack.length - 1] = _Node(
-        key: updateNode.key,
-        count: updateNode.count,
-        value: f(value), // Update
-        left: updateNode.left,
-        mid: updateNode.mid,
-        right: updateNode.right);
+      key: updateNode.key,
+      value: f(value), // Update
+      left: updateNode.left,
+      mid: updateNode.mid,
+      right: updateNode.right,
+    );
 
     // Rebuild path to leaf node (Path-copying immutability)
     for (int s = nStack.length - 2; s >= 0; --s) {
@@ -417,34 +409,34 @@ class ITrie<V> extends Iterable<(String, V)> {
       if (d < 0) {
         // left
         nStack[s] = _Node(
-            key: n2.key,
-            count: n2.count,
-            value: n2.value,
-            left: child,
-            mid: n2.mid,
-            right: n2.right);
+          key: n2.key,
+          value: n2.value,
+          left: child,
+          mid: n2.mid,
+          right: n2.right,
+        );
       } else if (d > 0) {
         // right
         nStack[s] = _Node(
-            key: n2.key,
-            count: n2.count,
-            value: n2.value,
-            left: n2.left,
-            mid: n2.mid,
-            right: child);
+          key: n2.key,
+          value: n2.value,
+          left: n2.left,
+          mid: n2.mid,
+          right: child,
+        );
       } else {
         // mid
         nStack[s] = _Node(
-            key: n2.key,
-            count: n2.count,
-            value: n2.value,
-            left: n2.left,
-            mid: child,
-            right: n2.right);
+          key: n2.key,
+          value: n2.value,
+          left: n2.left,
+          mid: child,
+          right: n2.right,
+        );
       }
     }
 
-    return ITrie._(nStack[0]);
+    return ITrie._(nStack[0], _count);
   }
 
   ITrie<V> insertMany(Iterable<(String, V)> iter) {
@@ -519,6 +511,9 @@ class ITrie<V> extends Iterable<(String, V)> {
   Iterable<String> get keys => map((entry) => entry.$1);
   Iterable<V> get values => map((entry) => entry.$2);
   bool has(String key) => get(key) != null;
+
+  @override
+  int get length => _count;
 
   @override
   String toString() {
