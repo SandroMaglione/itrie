@@ -19,8 +19,9 @@ void main() async {
           .toList(),
     );
 
+    print("Loaded ${itrie.length} words");
     while (true) {
-      print("Search a word\n");
+      print("Search a word");
       final line = stdin.readLineSync(encoding: utf8);
       if (line != null) {
         if (line == "q") {
