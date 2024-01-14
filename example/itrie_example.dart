@@ -11,8 +11,18 @@ void main() async {
       );
 
   try {
+    final sourceList = await lines.toList();
+    final selection = sourceList
+        .where(
+          (key) => key.length >= 2 && RegExp(r'^[A-Za-z]+$').hasMatch(key),
+        )
+        .map((e) => e.toLowerCase());
+
+    await File('./example/selection.txt')
+        .writeAsString(selection.toList().join("\n"));
+
     final itrie = ITrie<int>.fromIterable(
-      await lines
+      selection
           .map(
             (key) => (key.toLowerCase(), key.length),
           )
