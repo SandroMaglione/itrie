@@ -3,6 +3,21 @@ import 'package:test/test.dart';
 
 void main() {
   group('ITrie', () {
+    group('Iterable', () {
+      test('map (empty)', () {
+        final itrie = Iterable<int>.empty();
+        expect(itrie.map((e) => e + 2), []);
+      });
+
+      test('reduce (empty)', () {
+        final itrie = Iterable<int>.empty();
+        expect(
+          () => itrie.reduce((a, e) => a + e),
+          throwsA(TypeMatcher<StateError>()),
+        );
+      });
+    });
+
     group('constructors', () {
       test('empty', () {
         final itrie = ITrie<int>.empty();
