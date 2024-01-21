@@ -1,3 +1,8 @@
+/// {@template immutable_notice}
+/// [ITrie] is immutable: this method returns a copy of the original
+/// [ITrie] without modifying the original [ITrie]
+/// {@endtemplate}
+
 class _Node<V> {
   final String key;
   V? value;
@@ -93,7 +98,14 @@ class ITrie<V> extends Iterable<(String, V)> {
 
   const ITrie._(this._root, this._count);
 
+  /// Creates an empty [ITrie]
+  ///
+  /// {@category Constructor}
   factory ITrie.empty() => ITrie._(null, 0);
+
+  /// Creates an [ITrie] containing the values `V` from `entries`
+  ///
+  /// {@category Constructor}
   factory ITrie.fromIterable(Iterable<(String, V)> entries) {
     ITrie<V> itrie = ITrie.empty();
     for (final (key, value) in entries) {
@@ -105,7 +117,13 @@ class ITrie<V> extends Iterable<(String, V)> {
   @override
   Iterator<(String, V)> get iterator => _ITrieIterator(this);
 
-  /// If `key` already present its value is overwritten with `value`.
+  /// Insert a `key` + `value` into [ITrie]
+  ///
+  /// If `key` is already present its previous value is overwritten with `value`
+  ///
+  /// {@macro immutable_notice}
+  ///
+  /// {@category Mutation}
   ITrie<V> insert(String key, V value) {
     if (key.isEmpty) return this;
 
@@ -194,47 +212,11 @@ class ITrie<V> extends Iterable<(String, V)> {
     return ITrie._(nStack[0], addedNew ? _count + 1 : _count);
   }
 
-  V? get(String key) {
-    if (_root == null || key.isEmpty) return null;
-
-    _Node<V> n = _root;
-    int cIndex = 0;
-
-    while (cIndex < key.length) {
-      final c = key[cIndex];
-      final compare = c.compareTo(n.key);
-      if (compare > 0) {
-        final right = n.right;
-        if (right == null) {
-          return null;
-        } else {
-          n = right;
-        }
-      } else if (compare < 0) {
-        final left = n.left;
-        if (left == null) {
-          return null;
-        } else {
-          n = left;
-        }
-      } else {
-        if (cIndex == key.length - 1) {
-          return n.value;
-        } else {
-          final mid = n.mid;
-          if (mid == null) {
-            return null;
-          } else {
-            n = mid;
-            cIndex += 1;
-          }
-        }
-      }
-    }
-
-    return null;
-  }
-
+  /// Delete the given `key` from [ITrie]
+  ///
+  /// {@macro immutable_notice}
+  ///
+  /// {@category Mutation}
   ITrie<V> remove(String key) {
     if (_root == null || key.isEmpty) return this;
 
@@ -337,6 +319,11 @@ class ITrie<V> extends Iterable<(String, V)> {
     return ITrie._(nStack[0], _count - 1);
   }
 
+  /// Update the value at the given `key` using `f`
+  ///
+  /// {@macro immutable_notice}
+  ///
+  /// {@category Mutation}
   ITrie<V> modify(String key, V Function(V value) f) {
     if (_root == null || key.isEmpty) return this;
 
@@ -442,6 +429,11 @@ class ITrie<V> extends Iterable<(String, V)> {
     return ITrie._(nStack[0], _count);
   }
 
+  /// Inserts multiple key/value into the [ITrie] from an `Iterable<(String, V)>`
+  ///
+  /// {@macro immutable_notice}
+  ///
+  /// {@category Mutation}
   ITrie<V> insertMany(Iterable<(String, V)> iter) {
     var itrie = this;
     for (final (key, value) in iter) {
@@ -450,6 +442,11 @@ class ITrie<V> extends Iterable<(String, V)> {
     return itrie;
   }
 
+  /// Removes all the keys in `iter` from the [ITrie]
+  ///
+  /// {@macro immutable_notice}
+  ///
+  /// {@category Mutation}
   ITrie<V> removeMany(Iterable<String> iter) {
     var itrie = this;
     for (final key in iter) {
@@ -458,6 +455,53 @@ class ITrie<V> extends Iterable<(String, V)> {
     return itrie;
   }
 
+  /// Get value associate with the given `key`, or `null` if not found
+  ///
+  /// {@category Getter}
+  V? get(String key) {
+    if (_root == null || key.isEmpty) return null;
+
+    _Node<V> n = _root;
+    int cIndex = 0;
+
+    while (cIndex < key.length) {
+      final c = key[cIndex];
+      final compare = c.compareTo(n.key);
+      if (compare > 0) {
+        final right = n.right;
+        if (right == null) {
+          return null;
+        } else {
+          n = right;
+        }
+      } else if (compare < 0) {
+        final left = n.left;
+        if (left == null) {
+          return null;
+        } else {
+          n = left;
+        }
+      } else {
+        if (cIndex == key.length - 1) {
+          return n.value;
+        } else {
+          final mid = n.mid;
+          if (mid == null) {
+            return null;
+          } else {
+            n = mid;
+            cIndex += 1;
+          }
+        }
+      }
+    }
+
+    return null;
+  }
+
+  /// Returns longest key/value which is a prefix of `key`
+  ///
+  /// {@category Getter}
   (String, V)? longestPrefixOf(String key) {
     if (_root == null || key.isEmpty) return null;
 
@@ -502,19 +546,44 @@ class ITrie<V> extends Iterable<(String, V)> {
     return longestPrefixNode;
   }
 
+  /// Returns [Iterable] with all key/value with the given `prefix`
+  ///
+  /// {@category Getter}
   Iterable<(String, V)> withPrefix(String prefix) =>
       where((entry) => entry.$1.startsWith(prefix));
 
+  /// Returns [Iterable] with all the keys with the given `prefix`
+  ///
+  /// {@category Getter}
   Iterable<String> keysWithPrefix(String prefix) =>
       withPrefix(prefix).map((e) => e.$1);
 
+  /// Returns [Iterable] with all the values
+  /// associated to keys with the given `prefix`
+  ///
+  /// {@category Getter}
   Iterable<V> valuesWithPrefix(String prefix) =>
       withPrefix(prefix).map((e) => e.$2);
 
+  /// Returns [Iterable] of all keys in [ITrie] in **alphabetical order**
+  ///
+  /// {@category Getter}
   Iterable<String> get keys => map((entry) => entry.$1);
+
+  /// Returns [Iterable] of all values in [ITrie]
+  /// with keys extracted in **alphabetical order**
+  ///
+  /// {@category Getter}
   Iterable<V> get values => map((entry) => entry.$2);
+
+  /// Checks if given `key` is present into [ITrie]
+  ///
+  /// {@category Getter}
   bool has(String key) => get(key) != null;
 
+  /// Returns number of key/value inside [ITrie]
+  ///
+  /// {@category Getter}
   @override
   int get length => _count;
 
