@@ -1,16 +1,18 @@
 # `ITrie`
 
-<a href="https://github.com/SandroMaglione/itrie">
-<img src="https://img.shields.io/github/stars/SandroMaglione/itrie?logo=github" />
-</a>
-<!-- <img src="https://img.shields.io/pub/v/fpdart?include_prereleases" /> -->
-<img src="https://img.shields.io/github/license/SandroMaglione/itrie?logo=github" />
-<a href="https://github.com/SandroMaglione">
-<img alt="GitHub: SandroMaglione" src="https://img.shields.io/github/followers/SandroMaglione?label=Follow&style=social" target="_blank" />
-</a>
-<a href="https://twitter.com/SandroMaglione">
-<img alt="Twitter: SandroMaglione" src="https://img.shields.io/twitter/follow/SandroMaglione.svg?style=social" target="_blank" />
-</a>
+<p>
+    <a href="https://github.com/SandroMaglione/itrie">
+    <img src="https://img.shields.io/github/stars/SandroMaglione/itrie?logo=github" />
+    </a>
+    <!-- <img src="https://img.shields.io/pub/v/fpdart?include_prereleases" /> -->
+    <img src="https://img.shields.io/github/license/SandroMaglione/itrie?logo=github" />
+    <a href="https://github.com/SandroMaglione">
+    <img alt="GitHub: SandroMaglione" src="https://img.shields.io/github/followers/SandroMaglione?label=Follow&style=social" target="_blank" />
+    </a>
+    <a href="https://twitter.com/SandroMaglione">
+    <img alt="Twitter: SandroMaglione" src="https://img.shields.io/twitter/follow/SandroMaglione.svg?style=social" target="_blank" />
+    </a>
+</p>
 
 
 **Efficient, immutable and stack safe** implementation of a `Trie` data structure in dart.
