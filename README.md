@@ -1,4 +1,4 @@
-# `ITrie`
+<h1>ITrie</h1>
 
 <p>
     <a href="https://github.com/SandroMaglione/itrie">
@@ -19,6 +19,21 @@
 
 `Trie` is ideal for **autocomplete**, **text search**, **spell checking**, and generally when working with string and prefixes.
 
+- [💻 Installation](#-installation)
+- [💡 How to use](#-how-to-use)
+  - [Constructors](#constructors)
+  - [`Iterable`](#iterable)
+  - [Mutations (Immutable)](#mutations-immutable)
+  - [Getters](#getters)
+- [🛠️ Properties](#️-properties)
+  - [Immutable](#immutable)
+  - [Thread safe](#thread-safe)
+  - [(Space) Efficient](#space-efficient)
+- [📃 Versioning](#-versioning)
+- [😀 Support](#-support)
+- [👀 License](#-license)
+
+
 
 ## 💻 Installation
 
@@ -32,7 +47,7 @@ dependencies:
 The package export a single `ITrie` class.
 
 ### Constructors
-An `ITrie` can be create from any `Iterable` or using the `empty` constructor:
+An `ITrie` can be created from any `Iterable` or using the `empty` constructor:
 
 ```dart
 /// Empty [ITrie] with [int] values
@@ -57,11 +72,6 @@ available in the [Iterable API](https://api.dart.dev/stable/3.2.5/dart-core/Iter
 ### Mutations (Immutable)
 Methods to add/remove/modify key/value inside `ITrie`:
 
-> 🧱 `ITrie` **is immutable**
-> 
-> These methods return a copy of the original `ITrie`
-> without modifying the original `ITrie`
-
 ```dart
 final itrie = ITrie<int>.empty();
 
@@ -71,6 +81,11 @@ final modify = itrie.modify("key", (value) => value + 1);
 final insertMany = itrie.insertMany([("key2", 20)]);
 final removeMany = itrie.removeMany(["key"]);
 ```
+
+> 🧱 `ITrie` **is immutable**
+> 
+> These methods return a new copy of the original `ITrie`
+> **without modifying the original** `ITrie`
 
 ### Getters
 Methods to extract key/value based on `key` and `prefix`:
@@ -89,12 +104,36 @@ final length = itrie.length;
 final has = itrie.has("key");
 ```
 
+## 🛠️ Properties
+
+### Immutable
+The main difference between other trie implementations is that `ITrie` is **immutable**.
+
+Every mutation (e.g. `insert`, `delete`, `modify`) returns a new instance of `ITrie` instead of modifying the original `ITrie` in-place.
+
+```dart
+final itrie = ITrie<int>.empty();
+final newITrie = itrie.insert("key", 10); /// 👈 `insert` returns a new [ITrie]
+
+expect(itrie.length, 0); /// 👈 Original `itrie` is not modified
+expect(newITrie.length, 1);
+```
+
+> ✅ Immutability in `ITrie` uses a technique called **Path copying**: this makes `ITrie` efficient since it does not require to copy the full data structure with every mutation 
+
+### Thread safe
+`ITrie` does **not** use recursion. No matter how many operations or elements it contains, `ITrie` will never cause stack overflow issues.
+
+### (Space) Efficient
+`ITrie` is implemented internally as a **Ternary Search Trie**. This data structure allows for any alphabet size (any `String`) and it is also more space efficient compared to other trie implementations.
+
+
 ***
 
 
 ## 📃 Versioning
 
-- v0.0.1 - 21 January 2024
+- v0.0.1 - 22 January 2024
 
 ## 😀 Support
 
