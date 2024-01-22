@@ -1,8 +1,7 @@
 name: itrie
 description: >
-  Efficient, immutable and stack safe implementation of a `Trie` data structure in dart.
-  Ideal for autocomplete, text search, spell checking, and generally when working with string and prefixes.
-version: 0.0.1
+  Efficient, immutable and stack safe implementation of a Trie data structure in dart: autocomplete, text search, spell checking, strings and prefixes.
+version: 0.0.2
 homepage: https://www.sandromaglione.com/
 repository: https://github.com/SandroMaglione/itrie
 author: Maglione Sandro <lass.maglio@gmail.com>
