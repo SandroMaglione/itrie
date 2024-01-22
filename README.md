@@ -27,7 +27,7 @@
   - [Getters](#getters)
 - [🛠️ Properties](#️-properties)
   - [Immutable](#immutable)
-  - [Thread safe](#thread-safe)
+  - [Stack safe](#stack-safe)
   - [(Space) Efficient](#space-efficient)
 - [📃 Versioning](#-versioning)
 - [😀 Support](#-support)
@@ -121,7 +121,7 @@ expect(newITrie.length, 1);
 
 > ✅ Immutability in `ITrie` uses a technique called **Path copying**: this makes `ITrie` efficient since it does not require to copy the full data structure with every mutation 
 
-### Thread safe
+### Stack safe
 `ITrie` does **not** use recursion. No matter how many operations or elements it contains, `ITrie` will never cause stack overflow issues.
 
 ### (Space) Efficient

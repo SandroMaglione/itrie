@@ -1,8 +1,3 @@
-/// {@template immutable_notice}
-/// [ITrie] is immutable: this method returns a copy of the original
-/// [ITrie] without modifying the original [ITrie]
-/// {@endtemplate}
-
 class _Node<V> {
   final String key;
   V? value;
@@ -92,6 +87,13 @@ class _ITrieIterator<V> implements Iterator<(String, V)> {
   }
 }
 
+/// [ITrie] is used for locating specific string keys from within a set.
+///
+/// [ITrie] is often used to store a dictionary (list of words) that can be searched
+/// in a manner that allows for efficient generation of completion lists
+/// (e.g. predict the rest of a word a user is typing).
+///
+/// [ITrie] is **efficient, immutable and stack safe**.
 class ITrie<V> extends Iterable<(String, V)> {
   final _Node<V>? _root;
   final int _count;
@@ -121,7 +123,10 @@ class ITrie<V> extends Iterable<(String, V)> {
   ///
   /// If `key` is already present its previous value is overwritten with `value`
   ///
-  /// {@macro immutable_notice}
+  /// {@template immutable_notice}
+  /// [ITrie] is immutable: this method returns a copy of the original
+  /// [ITrie] without modifying the original [ITrie]
+  /// {@endtemplate}
   ///
   /// {@category Mutation}
   ITrie<V> insert(String key, V value) {
