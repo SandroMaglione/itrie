@@ -40,7 +40,7 @@
 ```yaml
 # pubspec.yaml
 dependencies:
-  itrie: ^0.0.1
+  itrie: ^0.0.2
 ```
 
 ## 💡 How to use
@@ -133,6 +133,7 @@ expect(newITrie.length, 1);
 
 ## 📃 Versioning
 
+- v0.0.2 - 22 January 2024
 - v0.0.1 - 22 January 2024
 
 ## 😀 Support
